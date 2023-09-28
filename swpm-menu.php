@@ -4,11 +4,11 @@
     Plugin URI: ---
     Description: Hide menu items following configuration
     Version: 1.0.0
-    Author: Giovanni CLEMENT
+    Author: Sandra Clark
     Author URI: ---
     License: GPL2
 
-    Copyright 2015 Giovanni CLEMENT(email: giovanni.clement@gmail.com)
+    Copyright 2023  Shayna Productions LLC (email: giovanni.clement@gmail.com)
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,6 +32,7 @@
 
         class Swpm_menu {
 
+
             /**
              * @var menu The single instance of the class
              */
@@ -41,7 +42,7 @@
              * @var string version number
              * @since 1.0.0
              */
-            public $version = '1.0.0';
+            public $version = '1.0.1';
 
             const META_KEY_NAME = 'menu-item-swpm';
             const NOT_LOGGED_IN_LEVEL_ID = -1;
@@ -124,11 +125,10 @@
              * @return string Form fields
              */
             function add_swpm_fields( $id, $item, $depth, $args ) {
-
-                //// Logged levels
+            // Logged levels
                 $levels = $this->get_membership_levels();
 
-                $item_groups = get_post_meta( $item->ID, self::META_KEY_NAME, true );
+                $item_groups = get_post_meta( $item->ID, self::META_KEY_NAME, false );
 
                 ?>
                     <p class="description description-wide menu-item-actions">
@@ -137,11 +137,24 @@
                         {
                             $key = self::META_KEY_NAME.'-'.$level->id;
                             $name  = sprintf( '%s[%s]', $key, $item->ID );
-                            $checked = in_array($level->id, $item_groups) || (count($item_groups) == 0 && $level->id == self::NOT_LOGGED_IN_LEVEL_ID) ? "checked" : "";
-                            ?>
+                               $checked='';
+                            if (count($item_groups) == 0 && strval($level->id) == self::NOT_LOGGED_IN_LEVEL_ID){
+                                $checked = 'checked';
+                            }
+                            if (is_array($item_groups) &&  count($item_groups) > 0) {
+                                if (in_array(strval($level->id), $item_groups[0])) {
+                                    $checked = 'checked';
+                                }
+                            }
+                            // $checked =  (count($item_groups) == 0 && strval($level->id) == self::NOT_LOGGED_IN_LEVEL_ID ||
+                            // in_array(strval($level->id), $item_groups) )
+                            //     ? 'checked'
+                            //     : ''
+                          ?>
                             <label class="menu-item-title" style="padding-top:8px;padding-bottom:8px;">
-                               <?php printf(
-                                 '<input type="checkbox" class="menu-item-checkbox" name="%3$s" value="%1$s" %4$s> %2$s',
+
+                        <?php printf(
+                                 '<input type="checkbox" class="menu-item-checkbox" name="%3$s" value="%1$s"  %4$s> %2$s',
                                  $level->id,
                                  $level->alias,
                                  $name,
@@ -214,8 +227,7 @@
                     }
 
                     //// Check rights
-                    $visible = count($item_groups) == 0 || in_array($level, $item_groups);
-
+                   $visible = !is_array($item_groups) ||  count($item_groups) == 0 || in_array($level, $item_groups);
                     // add filter to work with plugins that don't use traditional roles
                     $visible = apply_filters( 'swpm_menu_item_visibility', $visible, $item );
 
