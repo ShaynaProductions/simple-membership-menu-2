@@ -1,6 +1,6 @@
 # Simple Membership Menu
 
-Contributors: gclem
+Contributors: gclem, ShaynaProductions
 Tags: member, members, members only, membership, memberships, register, WordPress membership plugin, content, content protection, paypal, restrict, restrict access, Restrict content, admin, access control, subscription, teaser, protection, profile, login, login page, menu, menu auth, menu access
 
 Requires at least: 3.3
@@ -41,5 +41,7 @@ This plugin is a extension of the great plugin : [Simple Membership Plugin](http
 
 # Changelog
 
+## 1.0.1
+- Forked original source to update to php 8.2
 ## 1.0.0
 - Add group access restriction to menu items ( Appearance -> Menu ) following the available groups created from the Simple Membership Panel.
